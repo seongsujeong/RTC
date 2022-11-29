@@ -191,7 +191,8 @@ def runconfig_to_bursts(cfg: SimpleNamespace) -> list[Sentinel1BurstSlc]:
 
             # loop over burst objs extracted from SAFE zip
             for burst in load_bursts(safe_file, orbit_path, i_subswath, pol,
-                                     flag_apply_eap=False):
+                                     flag_apply_eap=False,
+                                     flag_az_fmrate_mismatch_mitigation=False):
                 # get burst ID
                 burst_id = burst.burst_id
 
