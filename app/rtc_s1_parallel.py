@@ -15,6 +15,7 @@ import isce3
 import numpy as np
 from osgeo import gdal
 import rtc_s1
+import subprocess
 
 from rtc.runconfig import RunConfig
 
@@ -248,6 +249,48 @@ def process_child_runconfig(path_runconfig_burst,
         os.remove(path_runconfig_burst)
 
     return result_child_process
+
+
+
+def process_child_runconfig_subprocess(path_runconfig_burst,
+                            path_burst_logfile=None,
+                            flag_full_logfile_format=None,
+                            keep_burst_runconfig=False):
+    '''
+    single worker to process runconfig from terminal using `subprocess`
+
+    Parameters
+    ----------
+    path_runconfig_burst: str
+        Path to the burst runconfig
+    path_burst_logfile: str
+        Path to the burst logfile
+    full_log_format: bool
+        Enable full formatting of log messages.
+        See `get_rtc_s1_parser()`
+    keep_burst_runconfig: bool
+        Keep the child runconfig when `True`;
+        delete it after done with the processing when `False`
+
+    Returns
+    -------
+    result_child_process: int
+        0 when the child process has completed succesfully
+    '''
+    list_arg_subprocess = ['rtc_s1.py', path_runconfig_burst]
+
+    if path_burst_logfile is not None: 
+        list_arg_subprocess += ['--log-file', path_burst_logfile]
+
+    if flag_full_logfile_format:
+        list_arg_subprocess.append('--full-log-format')
+
+    rtnval = subprocess.run(list_arg_subprocess)
+
+    if not keep_burst_runconfig:
+        os.remove(path_runconfig_burst)
+
+    return rtnval
 
 
 def run_parallel(cfg: RunConfig, logfile_path, flag_logger_full_format):
