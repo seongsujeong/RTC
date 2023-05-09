@@ -80,7 +80,11 @@ def split_runconfig(cfg_in,
                          f'{os.path.basename(child_output_dir)}_child_scratch')
 
     # determine the output directory for child process
-    basename_logfile = os.path.basename(parent_logfile_path)
+    if parent_logfile_path:
+        basename_logfile = os.path.basename(parent_logfile_path)
+    else:
+        basename_logfile = None
+        
     for burst_id in list_burst_id:
         path_temp_runconfig = os.path.join(cfg_in.scratch_path,
                                            f'burst_runconfig_{burst_id}.yaml')
